@@ -12,18 +12,14 @@ namespace PBIGettingStarted
     class Program
     {
         private static readonly string ClientId = Properties.Resources.ClientId;
-
         //RedirectUri you used when you registered your app.
         //For a client app, a redirect uri gives AAD more details on the specific application that it will authenticate.
         private static string redirectUri = "https://login.live.com/oauth20_desktop.srf";
-        
         //Resource Uri for Power BI API
         private static string resourceUri = "https://analysis.windows.net/powerbi/api";       
-      
         //OAuth2 authority Uri
         private static string authority = "https://login.windows.net/common/oauth2/authorize";
-        
-        private static AuthenticationContext authContext = null;
+        private static AuthenticationContext authContext;
         private static string token = string.Empty;
 
         //Uri for Power BI datasets
@@ -185,11 +181,10 @@ namespace PBIGettingStarted
         //Create Dataset operation: https://msdn.microsoft.com/en-US/library/mt203562(Azure.100).aspx
         static void CreateDataset()
         {
-            //In a production application, use more specific exception handling.           
             try
             {
                 //Create a POST web request to list all datasets
-                HttpWebRequest request = DatasetRequest(String.Format("{0}/datasets", datasetsUri), "POST", AccessToken());
+                HttpWebRequest request = DatasetRequest($"{datasetsUri}/datasets", "POST", AccessToken());
 
                 //Get a list of datasets
                 dataset ds = GetDatasets().value.GetDataset(datasetName);
