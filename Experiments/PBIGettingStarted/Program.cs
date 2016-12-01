@@ -1,9 +1,6 @@
-﻿//Copyright Microsoft 2015
-
-using System;
+﻿using System;
 using System.Collections.Generic;
 using System.Net;
-using System.Threading;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.IO;
 using System.Linq;
@@ -12,19 +9,9 @@ using System.Web.Script.Serialization;
 
 namespace PBIGettingStarted
 {
-
-    //Sample to show how to use the Power BI API
-    //  See also, http://docs.powerbi.apiary.io/reference
-
-    //To run this sample:
-    //Step 1 - Replace {Client ID from Azure AD app registration} with your client app ID. 
-    //To learn how to get a client app ID, see Register a client app (https://msdn.microsoft.com/en-US/library/dn877542.aspx#clientID)
-
     class Program
     {
-        //Step 1 - Replace {client id} with your client app ID. 
-        //To learn how to get a client app ID, see Register a client app (https://msdn.microsoft.com/en-US/library/dn877542.aspx#clientID)
-        private static string clientID = "4bd29994-0a7f-449c-b155-edd27e1019cb";
+        private static readonly string ClientId = Properties.Resources.ClientId;
 
         //RedirectUri you used when you registered your app.
         //For a client app, a redirect uri gives AAD more details on the specific application that it will authenticate.
@@ -37,7 +24,7 @@ namespace PBIGettingStarted
         private static string authority = "https://login.windows.net/common/oauth2/authorize";
         
         private static AuthenticationContext authContext = null;
-        private static string token = String.Empty;
+        private static string token = string.Empty;
 
         //Uri for Power BI datasets
         private static string datasetsUri = "https://api.powerbi.com/v1.0/myorg";
@@ -51,15 +38,8 @@ namespace PBIGettingStarted
             //Example table name
             string tableName = "Product";
 
-            Console.WriteLine("--- Power BI REST API examples ---");
-
             //Create Dataset operation
-            Console.WriteLine("Press Enter key to create a Dataset in Power BI:");
-            Console.ReadLine();
-
             CreateDataset();
-
-            Console.WriteLine("Dataset created");
 
             //Get Datasets operation
             Console.WriteLine();
@@ -72,7 +52,7 @@ namespace PBIGettingStarted
 
             foreach (dataset ds in datasets)
             {
-                Console.WriteLine(String.Format("id: {0} Name: {1}", ds.Id, ds.Name));
+                Console.WriteLine($"id: {ds.Id} Name: {ds.Name}");
             }
 
             //Get Tables operation
@@ -545,12 +525,12 @@ namespace PBIGettingStarted
                 // Create an instance of AuthenticationContext to acquire an Azure access token
                 authContext = new AuthenticationContext(authority, TC);
                 // Call AcquireToken to get an Azure token from Azure Active Directory token issuance endpoint
-                token = authContext.AcquireToken(resourceUri, clientID, new Uri(redirectUri), PromptBehavior.RefreshSession).AccessToken;
+                token = authContext.AcquireToken(resourceUri, ClientId, new Uri(redirectUri), PromptBehavior.RefreshSession).AccessToken;
             }
             else
             {
                 // Get the token in the cache
-                token = authContext.AcquireTokenSilent(resourceUri, clientID).AccessToken;
+                token = authContext.AcquireTokenSilent(resourceUri, ClientId).AccessToken;
             }
 
             return token;
