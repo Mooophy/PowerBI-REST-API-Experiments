@@ -49,7 +49,7 @@ namespace PBIGettingStarted {
         private const string DatasetsUri = "https://api.powerbi.com/v1.0/myorg";
 
         //Example dataset name and group name
-        private static readonly string DatasetName = "Data Set For Experiment Created at " + DateTime.Now.ToUniversalTime();
+        private static readonly string DatasetName = "Data Set For Experiment Created at " + DateTime.Now;
 
         private static void Main() {
             var ds = new Dataset {
