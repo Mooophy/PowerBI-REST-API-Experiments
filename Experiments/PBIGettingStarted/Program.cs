@@ -59,7 +59,6 @@ namespace PBIGettingStarted
 
         static void Main(string[] args)
         {
-            var serializer = new JavaScriptSerializer();
             var ds = new Dataset
             {
                 name = datasetName,
@@ -116,9 +115,7 @@ namespace PBIGettingStarted
 
             try
             {
-                //Create a POST web request to list all datasets
                 HttpWebRequest request = CreateRequestForDataset($"{datasetsUri}/datasets", "POST", AccessToken());
-                //Console.WriteLine(PostRequest(request, new Product().ToDatasetJson(datasetName)));
                 Console.WriteLine(PostRequest(request, ds.ToJson()));
             }
             catch (Exception ex)
