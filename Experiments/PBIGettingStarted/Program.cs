@@ -2,7 +2,6 @@
 using System.Net;
 using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.IO;
-using PowerBIExtensionMethods;
 using System.Web.Script.Serialization;
 using System.Collections.Generic;
 
@@ -10,13 +9,11 @@ namespace PBIGettingStarted
 {
     public class Dataset
     {
+        private static JavaScriptSerializer Serializer { get; } = new JavaScriptSerializer();
         public string name { get; set; }
         public List<Table> tables { get; set; }
-
-        public string ToJson()
-        {
-            return new JavaScriptSerializer().Serialize(this);
-        }
+        public List<Relationship> relationships { get; set; }
+        public string ToJson() => Serializer.Serialize(this);
     }
 
     public class Table
@@ -29,6 +26,16 @@ namespace PBIGettingStarted
     {
         public string name { get; set; }
         public string dataType { get; set; }
+    }
+
+    public class Relationship
+    {
+        public string name { get; set; }
+        public string crossFilteringBehavior { get; set; } = "OneDirection";
+        public string fromTable { get; set; }
+        public string fromColumn { get; set; }
+        public string toTable { get; set; }
+        public string toColumn { get; set; }
     }
 
     class Program
@@ -92,7 +99,19 @@ namespace PBIGettingStarted
                                 }
                             }
                         },
+                    },
+                relationships = new List<Relationship>
+                {
+                    new Relationship
+                    {
+                        name = "IdToId",
+                        fromTable = "Ages",
+                        fromColumn = "Id",
+                        toTable = "Names",
+                        toColumn = "Id",
+                        crossFilteringBehavior = "BothDirections"
                     }
+                }
             };
 
             try
