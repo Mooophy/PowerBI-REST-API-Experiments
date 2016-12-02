@@ -4,6 +4,8 @@ using Microsoft.IdentityModel.Clients.ActiveDirectory;
 using System.IO;
 using System.Web.Script.Serialization;
 using System.Collections.Generic;
+using System.Web.UI.WebControls;
+using PowerBIExtensionMethods;
 
 namespace PBIGettingStarted {
     public class Dataset {
@@ -33,6 +35,16 @@ namespace PBIGettingStarted {
         public string toColumn { get; set; }
     }
 
+    public class AgeEntity {
+        public int Id { get; set; }
+        public int Age { get; set; }
+    }
+
+    public class NameEntity {
+        public int Id { get; set; }
+        public string Name { get; set; }
+    }
+
     class Program {
         private static readonly string ClientId = Properties.Resources.ClientId;
         //RedirectUri you used when you registered your app.
@@ -52,6 +64,36 @@ namespace PBIGettingStarted {
         private static readonly string DatasetName = "Data Set For Experiment Created at " + DateTime.Now;
 
         private static void Main() {
+            CreateDataset();
+            //AddRows("b7fd8eb0-f65c-4f83-83c6-74e19ba0e4d1", "Names");
+            AddRows(
+                "b7fd8eb0-f65c-4f83-83c6-74e19ba0e4d1",
+                "Ages",
+                new JavaScriptSerializer()
+                    .Serialize(new List<AgeEntity> { new AgeEntity { Id = 42, Age = 33 } })
+            );
+        }
+
+        //static void AddRows(string datasetId, string tableName) {
+        //    //In a production application, use more specific exception handling. 
+        //    try {
+        //        var request = CreateRequestForDataset($"{DatasetsUri}/datasets/{datasetId}/tables/{tableName}/rows", "POST", AccessToken());
+        //        var names = new List<NameEntity> {
+        //            new NameEntity {Id = 12, Name = "Yue"},
+        //            new NameEntity {Id = 42, Name = "Alan"}
+        //        };
+        //        var serializer = new JavaScriptSerializer();
+        //        //POST request using the json from a list of Product
+        //        //NOTE: Posting rows to a model that is not created through the Power BI API is not currently supported. 
+        //        //      Please create a dataset by posting it through the API following the instructions on http://dev.powerbi.com.
+        //        Console.WriteLine(PostRequest(request, serializer.Serialize(names)));
+        //    } catch (Exception ex) {
+        //        Console.WriteLine(ex.Message);
+        //    }
+        //}
+
+
+        private static void CreateDataset() {
             var ds = new Dataset {
                 name = DatasetName,
                 tables = new List<Table>
@@ -98,7 +140,7 @@ namespace PBIGettingStarted {
                         name = "IdToId",
                         fromTable = "Ages",
                         fromColumn = "Id",
-                        toTable = "Names",
+                        toTable = "Names",  //primary
                         toColumn = "Id",
                         crossFilteringBehavior = "BothDirections"
                     }
@@ -112,6 +154,16 @@ namespace PBIGettingStarted {
                 Console.WriteLine(ex.Message);
             }
             Console.ReadKey();
+        }
+
+
+        static void AddRows(string datasetId, string tableName, string json) {
+            try {
+                var request = CreateRequestForDataset($"{DatasetsUri}/datasets/{datasetId}/tables/{tableName}/rows", "POST", AccessToken());
+                Console.WriteLine(PostRequest(request, json));
+            } catch (Exception ex) {
+                Console.WriteLine(ex.Message);
+            }
         }
 
         /// <summary>

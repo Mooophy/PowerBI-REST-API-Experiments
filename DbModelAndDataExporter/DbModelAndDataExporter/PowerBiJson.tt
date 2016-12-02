@@ -1,0 +1,17 @@
+﻿<#@ template debug="false" hostspecific="false" language="C#" #>
+<#@ assembly name="System.Core" #>
+<#@ import namespace="System.Linq" #>
+<#@ import namespace="System.Text" #>
+<#@ import namespace="System.Collections.Generic" #>
+<#@ import namespace="System.Runtime.InteropServices" #>
+<#@ output extension=".json" #>
+
+hello
+<#
+    int i;
+    i = 0;
+    for (i = 0; i < 10; i++) {
+#>			hello number <#=i#>
+<#        
+    }
+#>
